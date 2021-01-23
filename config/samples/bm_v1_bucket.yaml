@@ -1,0 +1,8 @@
+apiVersion: bm.bmutziu.me/v1
+kind: Bucket
+metadata:
+  name: bucket-sample
+spec:
+  cloud: gcp
+  fullName: bm-default-bucket-sample
+  onDeletePolicy: destroy
