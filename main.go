@@ -30,10 +30,10 @@ import (
 
 	appsv1 "k8s.io/api/apps/v1"
 
-	abv1 "github.com/didil/autobucket-operator/api/v1"
-	"github.com/didil/autobucket-operator/controllers"
-	"github.com/didil/autobucket-operator/lib"
-	"github.com/didil/autobucket-operator/services"
+	bmv1 "github.com/bmutziu/autobucket-operator/api/v1"
+	"github.com/bmutziu/autobucket-operator/controllers"
+	"github.com/bmutziu/autobucket-operator/lib"
+	"github.com/bmutziu/autobucket-operator/services"
 	// +kubebuilder:scaffold:imports
 )
 
@@ -45,7 +45,7 @@ var (
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
 
-	utilruntime.Must(abv1.AddToScheme(scheme))
+	utilruntime.Must(bmv1.AddToScheme(scheme))
 	utilruntime.Must(appsv1.AddToScheme(scheme))
 	// +kubebuilder:scaffold:scheme
 }

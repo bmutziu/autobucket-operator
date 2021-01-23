@@ -21,7 +21,7 @@ spec:
     metadata:
       labels:
         control-plane: controller-manager
-    spec:    
+    spec:
       containers:
       - command:
         - /manager
@@ -40,7 +40,7 @@ spec:
         - name: GCP_PROJECT
           value: $GCP_PROJECT
         - name: GOOGLE_APPLICATION_CREDENTIALS
-          value: /var/secrets/gcp/sa-operator.json
+          value: /var/secrets/gcp/account.json
         volumeMounts:
         - mountPath: /var/secrets/gcp
           name: autobucket-gcp-credentials

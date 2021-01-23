@@ -26,9 +26,9 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	abv1 "github.com/didil/autobucket-operator/api/v1"
+	bmv1 "github.com/bmutziu/autobucket-operator/api/v1"
 
-	"github.com/didil/autobucket-operator/services"
+	"github.com/bmutziu/autobucket-operator/services"
 )
 
 // BucketReconciler reconciles a Bucket object
@@ -39,14 +39,14 @@ type BucketReconciler struct {
 	GCPSvc services.GCPSvc
 }
 
-// +kubebuilder:rbac:groups=ab.leclouddev.com,resources=buckets,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups=ab.leclouddev.com,resources=buckets/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=bm.bmutziu.me,resources=buckets,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=bm.bmutziu.me,resources=buckets/status,verbs=get;update;patch
 
 func (r *BucketReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 	ctx := context.Background()
 	log := r.Log.WithValues("bucket", req.NamespacedName)
 
-	bucket := &abv1.Bucket{}
+	bucket := &bmv1.Bucket{}
 	err := r.Get(ctx, req.NamespacedName, bucket)
 	if err != nil {
 		if errors.IsNotFound(err) {
@@ -82,11 +82,11 @@ func (r *BucketReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 		// The object is being deleted
 		if containsString(bucket.ObjectMeta.Finalizers, bucketFinalizerName) {
 			// our finalizer is present, delete bucket
-			if bucket.Spec.OnDeletePolicy == abv1.BucketOnDeletePolicyDestroy {
+			if bucket.Spec.OnDeletePolicy == bmv1.BucketOnDeletePolicyDestroy {
 				log.Info("Deleting Storage Bucket", "Bucket.Cloud", bucket.Spec.Cloud, "Bucket.Name", bucket.Name)
 
 				switch bucket.Spec.Cloud {
-				case abv1.BucketCloudGCP:
+				case bmv1.BucketCloudGCP:
 					err := r.deleteGCPBucket(ctx, bucket)
 					if err != nil {
 						log.Error(err, "Failed to delete gcp Bucket", "Bucket.Name", bucket.Name)
@@ -116,7 +116,7 @@ func (r *BucketReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 		log.Info("Creating Bucket", "Bucket.Cloud", bucket.Spec.Cloud, "Bucket.Name", bucket.Name)
 
 		switch bucket.Spec.Cloud {
-		case abv1.BucketCloudGCP:
+		case bmv1.BucketCloudGCP:
 			err := r.createGCPBucket(ctx, bucket)
 			if err != nil {
 				log.Error(err, "Failed to create gcp Bucket", "Bucket.Name", bucket.Name)
@@ -141,9 +141,9 @@ func (r *BucketReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 	return ctrl.Result{}, nil
 }
 
-const bucketFinalizerName = "ab.leclouddev.com/bucket-finalizer"
+const bucketFinalizerName = "bm.bmutziu.me/bucket-finalizer"
 
-func (r *BucketReconciler) createGCPBucket(ctx context.Context, bucket *abv1.Bucket) error {
+func (r *BucketReconciler) createGCPBucket(ctx context.Context, bucket *bmv1.Bucket) error {
 	// create bucket
 	err := r.GCPSvc.CreateBucket(ctx, bucket.Spec.FullName)
 	if err != nil {
@@ -153,7 +153,7 @@ func (r *BucketReconciler) createGCPBucket(ctx context.Context, bucket *abv1.Buc
 	return nil
 }
 
-func (r *BucketReconciler) deleteGCPBucket(ctx context.Context, bucket *abv1.Bucket) error {
+func (r *BucketReconciler) deleteGCPBucket(ctx context.Context, bucket *bmv1.Bucket) error {
 	// delete bucket
 	err := r.GCPSvc.DeleteGCPBucket(ctx, bucket.Spec.FullName)
 	if err != nil {
@@ -165,7 +165,7 @@ func (r *BucketReconciler) deleteGCPBucket(ctx context.Context, bucket *abv1.Buc
 
 func (r *BucketReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&abv1.Bucket{}).
+		For(&bmv1.Bucket{}).
 		Complete(r)
 }
 

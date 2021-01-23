@@ -34,8 +34,8 @@ import (
 
 	ctrl "sigs.k8s.io/controller-runtime"
 
-	abv1 "github.com/didil/autobucket-operator/api/v1"
-	"github.com/didil/autobucket-operator/testsupport/mocks"
+	bmv1 "github.com/bmutziu/autobucket-operator/api/v1"
+	"github.com/bmutziu/autobucket-operator/testsupport/mocks"
 	// +kubebuilder:scaffold:imports
 )
 
@@ -68,7 +68,7 @@ var _ = BeforeSuite(func(done Done) {
 	Expect(err).ToNot(HaveOccurred())
 	Expect(cfg).ToNot(BeNil())
 
-	err = abv1.AddToScheme(scheme.Scheme)
+	err = bmv1.AddToScheme(scheme.Scheme)
 	Expect(err).NotTo(HaveOccurred())
 
 	err = appsv1.AddToScheme(scheme.Scheme)

@@ -5,9 +5,9 @@ metadata:
   labels:
     app: bucket-text-api
   annotations:
-    ab.leclouddev.com/cloud: gcp
-    ab.leclouddev.com/name-prefix: ab
-    ab.leclouddev.com/on-delete-policy: destroy
+    bm.bmutziu.me/cloud: gcp
+    bm.bmutziu.me/name-prefix: bm
+    bm.bmutziu.me/on-delete-policy: destroy
 spec:
   replicas: 2
   selector:
@@ -20,24 +20,24 @@ spec:
     spec:
       containers:
       - name: bucket-text-api
-        image: quay.io/didil/bucket-text-api
+        image: bmutziu/bucket-text-api
         ports:
           - containerPort: 8000
         env:
           - name: PORT
             value: "8000"
           - name: GCP_PROJECT
-            value : autobucket-demo
+            value : doc-20210122235631
           - name: BUCKET_NAME
-            value: ab-default-bucket-text-api
+            value: bm-default-bucket-text-api
           - name: GOOGLE_APPLICATION_CREDENTIALS
-            value: /var/secrets/gcp/sa.json
+            value: /var/secrets/gcp/account.json
         volumeMounts:
           - mountPath: /var/secrets/gcp
             name: storage-writer-key
         resources:
           limits:
-            cpu: "500m"            
+            cpu: "500m"
             memory: "128Mi"
       volumes:
         - name: storage-writer-key

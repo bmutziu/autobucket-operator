@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	abv1 "github.com/didil/autobucket-operator/api/v1"
+	bmv1 "github.com/bmutziu/autobucket-operator/api/v1"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/stretchr/testify/mock"
@@ -21,7 +21,7 @@ var _ = Describe("Deployment controller", func() {
 		NamespaceName  = "default"
 		DeploymentName = "test-deployment"
 		BucketName     = "test-deployment"
-		BucketFullName = "abtest-default-test-deployment"
+		BucketFullName = "bmtest-default-test-deployment"
 
 		timeout  = time.Second * 5
 		duration = time.Second * 10
@@ -30,7 +30,7 @@ var _ = Describe("Deployment controller", func() {
 
 	Context("When creating a deployment", func() {
 		var deployment *appsv1.Deployment
-		var bucket *abv1.Bucket
+		var bucket *bmv1.Bucket
 
 		It("Should create the bucket crd", func() {
 			ctx := context.Background()
@@ -42,9 +42,9 @@ var _ = Describe("Deployment controller", func() {
 					Name:      DeploymentName,
 					Namespace: NamespaceName,
 					Annotations: map[string]string{
-						"ab.leclouddev.com/cloud":            "gcp",
-						"ab.leclouddev.com/name-prefix":      "abtest",
-						"ab.leclouddev.com/on-delete-policy": "ignore",
+						"bm.bmutziu.me/cloud":            "gcp",
+						"bm.bmutziu.me/name-prefix":      "bmtest",
+						"bm.bmutziu.me/on-delete-policy": "ignore",
 					},
 				},
 				Spec: appsv1.DeploymentSpec{
@@ -74,7 +74,7 @@ var _ = Describe("Deployment controller", func() {
 
 			// wait for bucket creation
 			Eventually(func() error {
-				bucket = &abv1.Bucket{}
+				bucket = &bmv1.Bucket{}
 				err := k8sClient.Get(ctx, types.NamespacedName{Name: DeploymentName, Namespace: deployment.Namespace}, bucket)
 				if err != nil {
 					return err

@@ -1,9 +1,9 @@
 # Autobucket Operator
 Kubernetes Operator that automatically creates and manages Cloud Buckets (Object Storage) for k8s Deployments. Built with Go and Operator SDK.
 
-[![Build Status](https://travis-ci.org/didil/autobucket-operator.svg?branch=master)](https://travis-ci.org/didil/autobucket-operator)
+[![Build Status](https://travis-ci.org/bmutziu/autobucket-operator.svg?branch=master)](https://travis-ci.org/bmutziu/autobucket-operator)
 
-This repository is a companion repo for the article: [Autobucket Operator: Building a Cloud Storage Kubernetes Operator with Go and Operator SDK](https://didil.medium.com/autobucket-operator-7e77eca95fcc)
+This repository is a companion repo for the article: [Autobucket Operator: Building a Cloud Storage Kubernetes Operator with Go and Operator SDK](https://bmutziu.medium.com/autobucket-operator-7e77eca95fcc)
 
 **THIS SOFTWARE IS WORK IN PROGRESS / ALPHA RELEASE AND IS NOT MEANT FOR USAGE IN PRODUCTION SYSTEMS**
 
@@ -36,7 +36,7 @@ SERVICE_ACCOUNT=autobucket-operator
 gcloud iam service-accounts create $SERVICE_ACCOUNT \
 --project $GCP_PROJECT
 ```
-Grant Storage Admin role to the service account 
+Grant Storage Admin role to the service account
 ```
 gcloud projects add-iam-policy-binding $GCP_PROJECT \
 --member=serviceAccount:$SERVICE_ACCOUNT@$GCP_PROJECT.iam.gserviceaccount.com \
@@ -73,18 +73,18 @@ kind: Deployment
 metadata:
   name: sample-deployment
   annotations:
-    ab.leclouddev.com/cloud: gcp
-    ab.leclouddev.com/name-prefix: ab
-    ab.leclouddev.com/on-delete-policy: destroy
+    bm.bmutziu.me/cloud: gcp
+    bm.bmutziu.me/name-prefix: bm
+    bm.bmutziu.me/on-delete-policy: destroy
 ````
 
-- ````ab.leclouddev.com/cloud````: cloud where the storage bucket is created. Valid options: "gcp". If this annotation is missing or empty, no bucket is created for the deployment. 
-- ````ab.leclouddev.com/name-prefix````: storage bucket name prefix. Default: "ab" (short name for autobucket). 
-- ````ab.leclouddev.com/on-delete-policy````: bucket deletion policy when the deployment is deleted. Valid options: "ignore" (do nothing), "destroy" (delete the storage bucket). 
-  
+- ````bm.bmutziu.me/cloud````: cloud where the storage bucket is created. Valid options: "gcp". If this annotation is missing or empty, no bucket is created for the deployment.
+- ````bm.bmutziu.me/name-prefix````: storage bucket name prefix. Default: "bm" (short name for bucketmigration).
+- ````bm.bmutziu.me/on-delete-policy````: bucket deletion policy when the deployment is deleted. Valid options: "ignore" (do nothing), "destroy" (delete the storage bucket).
+
 The full name format for the created storage buckets is "{prefix}-{namespace}-{deployment-name}"
 
-For example, the previous deployment, when deployed to the default namespace will automatically create a GCP Bucket: "ab-default-sample-deployment" 
+For example, the previous deployment, when deployed to the default namespace will automatically create a GCP Bucket: "bm-default-sample-deployment"
 
 
 ## TODO

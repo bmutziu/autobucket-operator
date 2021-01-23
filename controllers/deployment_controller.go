@@ -19,7 +19,7 @@ package controllers
 import (
 	"context"
 
-	abv1 "github.com/didil/autobucket-operator/api/v1"
+	bmv1 "github.com/bmutziu/autobucket-operator/api/v1"
 	"github.com/go-logr/logr"
 	appsv1 "k8s.io/api/apps/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -39,8 +39,8 @@ type DeploymentReconciler struct {
 
 // +kubebuilder:rbac:groups=apps,resources=deployments,verbs=get;list;watch
 // +kubebuilder:rbac:groups=apps,resources=deployments/status,verbs=get
-// +kubebuilder:rbac:groups=ab.leclouddev.com,resources=buckets,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups=ab.leclouddev.com,resources=buckets/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=bm.bmutziu.me,resources=buckets,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=bm.bmutziu.me,resources=buckets/status,verbs=get;update;patch
 
 func (r *DeploymentReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 	ctx := context.Background()
@@ -62,14 +62,14 @@ func (r *DeploymentReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) 
 		return ctrl.Result{}, err
 	}
 
-	bucketCloud := abv1.BucketCloud(dep.Annotations[bucketCloudKey])
+	bucketCloud := bmv1.BucketCloud(dep.Annotations[bucketCloudKey])
 	if bucketCloud == "" {
 		// no autobucket annotation
 		return ctrl.Result{}, nil
 	}
 
 	// Check if the bucket object already exists, if not create a new one
-	bucket := &abv1.Bucket{}
+	bucket := &bmv1.Bucket{}
 	err = r.Get(ctx, types.NamespacedName{Name: dep.Name, Namespace: dep.Namespace}, bucket)
 	if err != nil && errors.IsNotFound(err) {
 		// Define new
@@ -94,7 +94,7 @@ func (r *DeploymentReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) 
 	}
 
 	// check if bucket ondelete policy must be updated
-	bucketOnDeletePolicy := abv1.BucketOnDeletePolicy(dep.Annotations[bucketOnDeletePolicyKey])
+	bucketOnDeletePolicy := bmv1.BucketOnDeletePolicy(dep.Annotations[bucketOnDeletePolicyKey])
 	if bucketOnDeletePolicy != bucket.Spec.OnDeletePolicy {
 		bucket.Spec.OnDeletePolicy = bucketOnDeletePolicy
 
@@ -116,15 +116,15 @@ func bucketFullName(prefix, namespace, depName string) string {
 	return prefix + "-" + namespace + "-" + depName
 }
 
-const bucketCloudKey = "ab.leclouddev.com/cloud"
-const bucketNamePrefixKey = "ab.leclouddev.com/name-prefix"
-const bucketOnDeletePolicyKey = "ab.leclouddev.com/on-delete-policy"
+const bucketCloudKey = "bm.bmutziu.me/cloud"
+const bucketNamePrefixKey = "bm.bmutziu.me/name-prefix"
+const bucketOnDeletePolicyKey = "bm.bmutziu.me/on-delete-policy"
 
 // bucketForDeployment returns a Bucket object
-func (r *DeploymentReconciler) bucketForDeployment(dep *appsv1.Deployment) (*abv1.Bucket, error) {
+func (r *DeploymentReconciler) bucketForDeployment(dep *appsv1.Deployment) (*bmv1.Bucket, error) {
 	labels := labelsForBucket(dep.Name)
 
-	bucketCloud := abv1.BucketCloud(dep.Annotations[bucketCloudKey])
+	bucketCloud := bmv1.BucketCloud(dep.Annotations[bucketCloudKey])
 
 	bucketNamePrefix := dep.Annotations[bucketNamePrefixKey]
 	if bucketNamePrefix == "" {
@@ -132,18 +132,18 @@ func (r *DeploymentReconciler) bucketForDeployment(dep *appsv1.Deployment) (*abv
 	}
 
 	bucketFullName := bucketFullName(bucketNamePrefix, dep.Namespace, dep.Name)
-	bucketOnDeletePolicy := abv1.BucketOnDeletePolicy(dep.Annotations[bucketOnDeletePolicyKey])
+	bucketOnDeletePolicy := bmv1.BucketOnDeletePolicy(dep.Annotations[bucketOnDeletePolicyKey])
 	if bucketOnDeletePolicy == "" {
-		bucketOnDeletePolicy = abv1.BucketOnDeletePolicyIgnore
+		bucketOnDeletePolicy = bmv1.BucketOnDeletePolicyIgnore
 	}
 
-	bucket := &abv1.Bucket{
+	bucket := &bmv1.Bucket{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      dep.Name,
 			Namespace: dep.Namespace,
 			Labels:    labels,
 		},
-		Spec: abv1.BucketSpec{
+		Spec: bmv1.BucketSpec{
 			Cloud:          bucketCloud,
 			FullName:       bucketFullName,
 			OnDeletePolicy: bucketOnDeletePolicy,
@@ -167,6 +167,6 @@ const deploymentCRKey = "deployment_cr"
 func (r *DeploymentReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&appsv1.Deployment{}).
-		Owns(&abv1.Bucket{}).
+		Owns(&bmv1.Bucket{}).
 		Complete(r)
 }

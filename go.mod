@@ -1,4 +1,4 @@
-module github.com/didil/autobucket-operator
+module github.com/bmutziu/autobucket-operator
 
 go 1.13
 

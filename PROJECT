@@ -1,7 +1,7 @@
 domain: leclouddev.com
 layout: go.kubebuilder.io/v2
 projectName: autobucket-operator
-repo: github.com/didil/autobucket-operator
+repo: github.com/bmutziu/autobucket-operator
 resources:
 - group: ab
   kind: Bucket

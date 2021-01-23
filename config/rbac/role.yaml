@@ -7,26 +7,6 @@ metadata:
   name: manager-role
 rules:
 - apiGroups:
-  - ab.leclouddev.com
-  resources:
-  - buckets
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - ab.leclouddev.com
-  resources:
-  - buckets/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
   - apps
   resources:
   - deployments
@@ -40,3 +20,23 @@ rules:
   - deployments/status
   verbs:
   - get
+- apiGroups:
+  - bm.bmutziu.me
+  resources:
+  - buckets
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - bm.bmutziu.me
+  resources:
+  - buckets/status
+  verbs:
+  - get
+  - patch
+  - update

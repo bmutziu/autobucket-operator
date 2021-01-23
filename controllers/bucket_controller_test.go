@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	abv1 "github.com/didil/autobucket-operator/api/v1"
+	bmv1 "github.com/bmutziu/autobucket-operator/api/v1"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/stretchr/testify/mock"
@@ -16,7 +16,7 @@ var _ = Describe("Bucket controller", func() {
 	const (
 		NamespaceName  = "default"
 		BucketName     = "test-bucket"
-		BucketFullName = "ab-default-test-bucket"
+		BucketFullName = "bmtest-default-test-deployment"
 
 		timeout  = time.Second * 5
 		duration = time.Second * 10
@@ -24,22 +24,22 @@ var _ = Describe("Bucket controller", func() {
 	)
 
 	Context("When creating a bucket", func() {
-		var bucket *abv1.Bucket
+		var bucket *bmv1.Bucket
 
 		It("Should create the storage bucket", func() {
 			ctx := context.Background()
 
 			gcpSvc.On("CreateBucket", mock.AnythingOfType("*context.emptyCtx"), BucketFullName).Return(nil)
 
-			bucket = &abv1.Bucket{
+			bucket = &bmv1.Bucket{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      BucketName,
 					Namespace: NamespaceName,
 				},
-				Spec: abv1.BucketSpec{
-					Cloud:          abv1.BucketCloudGCP,
+				Spec: bmv1.BucketSpec{
+					Cloud:          bmv1.BucketCloudGCP,
 					FullName:       BucketFullName,
-					OnDeletePolicy: abv1.BucketOnDeletePolicyIgnore,
+					OnDeletePolicy: bmv1.BucketOnDeletePolicyIgnore,
 				},
 			}
 			Expect(k8sClient.Create(ctx, bucket)).Should(Succeed())
@@ -63,7 +63,7 @@ var _ = Describe("Bucket controller", func() {
 
 			// wait for bucket creation
 			Eventually(func() bool {
-				updatedBucket := &abv1.Bucket{}
+				updatedBucket := &bmv1.Bucket{}
 				err := k8sClient.Get(ctx, types.NamespacedName{Name: bucket.Name, Namespace: bucket.Namespace}, updatedBucket)
 				if err != nil {
 					return false

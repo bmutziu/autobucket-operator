@@ -5,7 +5,7 @@ metadata:
   name: bucket-editor-role
 rules:
 - apiGroups:
-  - ab.leclouddev.com
+  - bm.bmutziu.me
   resources:
   - buckets
   verbs:
@@ -17,7 +17,7 @@ rules:
   - update
   - watch
 - apiGroups:
-  - ab.leclouddev.com
+  - bm.bmutziu.me
   resources:
   - buckets/status
   verbs:

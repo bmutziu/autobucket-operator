@@ -1,8 +1,0 @@
-apiVersion: ab.leclouddev.com/v1
-kind: Bucket
-metadata:
-  name: bucket-sample
-spec:
-  cloud: gcp
-  fullName: ab-default-bucket-sample
-  onDeletePolicy: destroy
